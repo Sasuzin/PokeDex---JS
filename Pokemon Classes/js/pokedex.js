@@ -10,17 +10,21 @@ import { telaScanner } from './telas/scanner.js'
 import { telaCaptura } from './telas/captura.js'
 import { painelMochila } from './telas/mochila.js'
 
-const semAcento = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '')
+// Deixa o nome e o texto buscado no mesmo formato, para "Nidoran♀", "Farfetch'd", "Type: Null",
+// "Mr. Mime" e "Flabébé" serem achados do jeito que aparecem na tela:
+// minúsculas, sem acento, ♀/♂ viram f/m, apóstrofo e ponto somem, e o resto que não é letra ou número vira espaço.
+export const chaveDeBusca = t => String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/♀/g, ' f').replace(/♂/g, ' m').replace(/['’.]/g, '').replace(/[^a-z0-9]+/g, ' ').trim()
 
 // Filtra a lista por geração, tipo e texto (nome ou número).
 // Com texto digitado, a busca vale para todas as gerações: quem procura "Lucario" quer achá-lo mesmo com a Gen I selecionada.
 function filtrar(list, genKey, query, type) {
-    const q = semAcento(query.trim().toLowerCase()).replace('#', '')
-    const qn = q.replace(/^0+/, '')
+    const q = chaveDeBusca(query)
+    const qn = /^\d+$/.test(q) ? String(+q) : null
     const g = q ? GENS.find(x => x[0] === 'all') : (GENS.find(x => x[0] === genKey) || GENS[0])
     return list.filter(p => p.id >= g[2] && p.id <= g[3]
         && (!type || p.types.includes(type))
-        && (!q || p.name.includes(q) || p.name.replace(/-/g, ' ').includes(q.replace(/\./g, '')) || (qn && String(p.id) === qn)))
+        && (!q || chaveDeBusca(p.name).includes(q) || (qn && String(p.id) === qn)))
 }
 
 export class Pokedex extends Component {
@@ -430,7 +434,7 @@ export class Pokedex extends Component {
             onGen: e => this.setFilter({ gen: e.target.value }),
             toggleShiny: () => this.setState({ shiny: !sh }),
             shinyBg: sh ? '#FFF3DC' : '#fff', shinyFg: sh ? '#B7791A' : '#586675', shinyBorder: sh ? '#B7791A' : '#C3CCD8',
-            countLabel: ready ? filt.length + ' Pokémon' + (s.query.trim() ? ' em todas as gerações' : '') : '', typeChips,
+            countLabel: ready ? filt.length + ' Pokémon' + (chaveDeBusca(s.query) ? ' em todas as gerações' : '') : '', typeChips,
             isEmpty: ready && !filt.length, clearFilters: () => this.setFilter({ query: '', type: null }),
 
             isClassic: ready && filt.length > 0 && s.model === 'classic',
