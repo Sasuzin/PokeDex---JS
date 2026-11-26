@@ -1,0 +1,75 @@
+/* Pokédex: base, animações e estilos reaproveitados (design system HKTC). */
+
+body { margin: 0; background: #EDF0F4; color: #1B2733; font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+a { color: #1B5BA0; }
+a:hover { color: #144376; }
+button, input, select { font-family: inherit; }
+
+@keyframes pdBob { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+@keyframes pdFloat { 0%, 100% { transform: translateY(0) rotate(0) } 50% { transform: translateY(-10px) rotate(-2deg) } }
+@keyframes pdSpin { to { transform: rotate(360deg) } }
+@keyframes pdSpinR { to { transform: rotate(-360deg) } }
+@keyframes pdPop { 0% { opacity: 0; transform: scale(.55) translateY(14px) } 100% { opacity: 1; transform: none } }
+@keyframes pdFadeUp { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+@keyframes pdFade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes pdSlide { from { transform: translateX(100%) } to { transform: none } }
+@keyframes pdScan { from { transform: translateY(-100%) } to { transform: translateY(100%) } }
+@keyframes pdBlink { 0%, 100% { opacity: 1 } 50% { opacity: .25 } }
+@keyframes pdPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0) } 50% { box-shadow: 0 0 0 9px rgba(255,255,255,.35) } }
+@keyframes pdGrow { from { transform: scale(0); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+@keyframes pdThrow { 0% { transform: translate(-180px,240px) rotate(-720deg) scale(.5); opacity: 0 } 15% { opacity: 1 } 100% { transform: none; opacity: 1 } }
+@keyframes pdShake { 0%, 100% { transform: rotate(0) } 25% { transform: rotate(-20deg) } 75% { transform: rotate(20deg) } }
+@keyframes pdSuck { 0% { transform: scale(1); filter: brightness(1); opacity: 1 } 40% { filter: brightness(3) } 100% { transform: scale(0) translateY(40px); filter: brightness(5); opacity: 0 } }
+@keyframes pdBurst { 0% { transform: scale(.2); opacity: 0 } 40% { opacity: 1 } 100% { transform: scale(1.8); opacity: 0 } }
+@keyframes pdGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0) } 50% { box-shadow: 0 0 18px 6px rgba(255,255,255,.9) } }
+@keyframes pdCaret { 50% { opacity: 0 } }
+
+/* Botões */
+.btn { height: 40px; padding: 0 16px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.btn-sm { height: 32px; padding: 0 12px; font-size: 12px; }
+.btn-primary { border: 0; background: #1B5BA0; color: #fff; }
+.btn-primary:hover { background: #144376; }
+.btn-outline { border: 1px solid #C3CCD8; background: #fff; color: #586675; }
+.btn-outline:hover { background: #F6F8FA; color: #1B2733; }
+.btn-icon { width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: grid; place-items: center; color: #586675; }
+.btn-icon.outline { border: 1px solid #C3CCD8; background: #fff; }
+.btn-icon.ghost { border: 0; background: transparent; }
+.btn-icon:hover { background: #F6F8FA; color: #1B2733; }
+
+/* Campos */
+.campo-busca { position: relative; }
+.campo-busca svg { position: absolute; left: 12px; top: 12px; }
+.input { width: 100%; height: 40px; border: 1px solid #C3CCD8; border-radius: 8px; padding: 0 12px 0 36px; font-size: 14px; color: #1B2733; background: #fff; outline: none; }
+.input:focus { border-color: #1B5BA0; box-shadow: 0 0 0 3px #DBE5F0; }
+.select { height: 40px; border: 1px solid #C3CCD8; border-radius: 8px; padding: 0 10px; font-size: 14px; color: #1B2733; background: #fff; cursor: pointer; }
+
+/* Peças reaproveitadas */
+.badge { padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 700; line-height: 1.15; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.cartao { background: #fff; border: 1px solid #D6DDE6; border-radius: 10px; }
+.fato { background: #F6F8FA; border: 1px solid #D6DDE6; border-radius: 8px; padding: 10px 12px; }
+.fato-rotulo { font-size: 11px; font-weight: 700; letter-spacing: .045em; color: #8893A2; }
+.fato-valor { font-size: 14px; font-weight: 600; margin-top: 2px; }
+.varredura { position: absolute; left: 0; right: 0; top: 0; height: 100%; pointer-events: none; z-index: 3; animation: pdScan .9s ease-out both; background: linear-gradient(180deg, transparent 0%, transparent 46%, rgba(234,240,246,.65) 50%, rgba(27,91,160,.15) 51%, transparent 56%); }
+
+/* Bolinhas de cor da Clássica */
+.cor-bolinha { padding: 0; cursor: pointer; display: grid; place-items: center; transition: transform .15s, box-shadow .15s; }
+.cor-bolinha:hover { transform: scale(1.08); }
+
+/* Aparelho Clássica: as cores vêm das variáveis --casco, --borda, --claro, --clarissimo e --rotulo */
+.classica-casco { transition: background .3s, border-color .3s; }
+
+/* Estados de hover / clique (equivalem ao style-hover / style-active do protótipo) */
+.hv-sobe:hover { transform: translateY(-3px); }
+.hv-sobe-borda:hover { transform: translateY(-3px); border-color: #1B5BA0 !important; }
+.hv-sobe2-borda:hover { transform: translateY(-2px); border-color: #1B5BA0 !important; }
+.hv-borda:hover { border-color: #1B5BA0 !important; }
+.hv-chip:hover { background: rgba(255,255,255,.14) !important; }
+.hv-fantasma-escuro:hover { background: rgba(255,255,255,.1) !important; color: #fff !important; }
+.hv-evo-escuro:hover { background: #586675 !important; }
+.hv-seta-scan:hover { color: #1B5BA0 !important; border-color: #1B5BA0 !important; }
+.hv-opaco:hover { opacity: 1 !important; }
+.at-aperta92:active { transform: scale(.92); }
+.at-aperta94:active { transform: scale(.94); }
+.at-branco:active { color: #fff !important; }
