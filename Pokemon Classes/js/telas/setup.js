@@ -151,7 +151,7 @@ function passoFavorito(v) {
 
 export function telaSetup(v) {
     return html`
-        <div style="min-height:100vh;padding:40px 24px 64px;">
+        <div style="flex:1;padding:40px 24px 64px;">
             <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:24px;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     ${pokebola({ tamanho: 28, borda: 2, faixa: 2, botao: 10, animacao: 'pdSpin 6s linear infinite' })}
