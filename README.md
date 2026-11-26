@@ -12,6 +12,10 @@ Escolha o seu modelo, capture o seu Pokémon favorito e explore todas as geraç�
 ![Pokémon](https://img.shields.io/badge/Pok%C3%A9mon-1.025-1B5BA0)
 ![Build](https://img.shields.io/badge/build-nenhum-2E8B57)
 
+### [▶ Abrir a Pokédex](https://sasuzin.github.io/PokeDex---JS/)
+
+<sub>Funciona direto no navegador, no computador ou no celular: https://sasuzin.github.io/PokeDex---JS/</sub>
+
 <img src="docs/capturas/classica.jpg" alt="Modelo Clássica da Pokédex mostrando o Pikachu" width="720">
 
 </div>
@@ -72,7 +76,15 @@ Clique em **Pokédex**, no canto superior esquerdo, para voltar à escolha do mo
 
 <p align="center"><img src="docs/capturas/escolher-modelo.jpg" alt="Tela de escolha do modelo com a paleta de cores da Clássica" width="600"></p>
 
-## 🚀 Como rodar
+## 🚀 Como usar
+
+### Online
+
+Acesse **https://sasuzin.github.io/PokeDex---JS/**. Não precisa instalar nada.
+
+O site é publicado no GitHub Pages pelo workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml). Cada push na `main` atualiza o link em cerca de um minuto.
+
+### No seu computador
 
 O projeto não tem dependências para instalar nem etapa de build. Basta servir a pasta `Pokemon Classes` com qualquer servidor estático. É preciso um servidor porque o código usa ES modules, que não funcionam abrindo o arquivo direto.
 
