@@ -8,6 +8,7 @@ class Pokemon {
 class Agua extends Pokemon {
     constructor(vida, velocidade) {
         super(vida, velocidade)
+        this.tipo = 'Agua'
     }
 
     RecebeDano(quantidade, tipo) {
@@ -22,6 +23,7 @@ class Agua extends Pokemon {
 class Fogo extends Pokemon {
     constructor(vida, velocidade) {
         super(vida, velocidade)
+        this.tipo = 'Fogo'
     }
 
     RecebeDano(quantidade, tipo) {
@@ -36,6 +38,7 @@ class Fogo extends Pokemon {
 class Planta extends Pokemon {
     constructor(vida, velocidade) {
         super(vida, velocidade)
+        this.tipo = 'Planta'
     }
 
     RecebeDano(quantidade, tipo) {
