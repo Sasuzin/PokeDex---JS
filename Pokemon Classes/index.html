@@ -5,10 +5,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokemon Classes</title>
+    <style>
+        /* Estilo provisório, só para conferir os dados. */
+        body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; background: #f4f4f5; color: #18181b; }
+        h1 { margin: 0 0 16px; }
+        #pokedex { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+        .card { background: #fff; border-radius: 12px; padding: 16px; border-top: 6px solid #a1a1aa; }
+        .card.agua { border-top-color: #3b82f6; }
+        .card.fogo { border-top-color: #f97316; }
+        .card.planta { border-top-color: #22c55e; }
+        .card img { width: 100%; aspect-ratio: 1; object-fit: contain; }
+        .card h2 { margin: 4px 0; font-size: 1.1rem; }
+        .card p { margin: 0; font-size: 0.85rem; color: #52525b; }
+        .numero { font-size: 0.8rem; color: #71717a; }
+    </style>
 </head>
 <body>
 
+    <h1>Pokédex</h1>
+    <p id="status"></p>
+    <ul id="pokedex"></ul>
+
     <script src="script.js"></script>
-    
+    <script src="pokeapi.js"></script>
+    <script src="app.js"></script>
+
 </body>
 </html>
