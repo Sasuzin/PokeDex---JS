@@ -46,7 +46,8 @@ export class Pokedex extends Component {
             bag: Array.isArray(pr.bag) ? pr.bag.filter(Number.isInteger).slice(0, BAG_MAX) : [],
             bagOpen: false, bagQuery: '', bagGen: 'all', bagLimit: 120, bagMsg: null,
             list: [], loading: true, error: null,
-            gen: pr.favId ? genOf(pr.favId) : start, query: '', type: null,
+            // A lista abre com todas as gerações; o seletor de geração serve para afunilar.
+            gen: 'all', query: '', type: null,
             selId: pr.favId || 1, shiny: false, drawer: false, statsOn: false, typed: 0, crying: false,
             pickQuery: '', pickGen: pr.favId ? genOf(pr.favId) : start, pickLimit: 120, gridLimit: 96, capture: null,
         }
@@ -223,7 +224,7 @@ export class Pokedex extends Component {
 
     capture(id, fromSetup) {
         const patch = { favId: id, draftFav: id, capture: { id, t: Date.now() }, phase: 'app', editing: false, step: 0 }
-        if (fromSetup) Object.assign(patch, { gen: genOf(id), query: '', type: null })
+        if (fromSetup) Object.assign(patch, { gen: 'all', query: '', type: null })
         // O favorito entra na mochila automaticamente, se ainda houver espaço.
         const bag = this.state.bag
         if (!bag.includes(id) && bag.length < BAG_MAX) patch.bag = bag.concat(id)
@@ -251,7 +252,7 @@ export class Pokedex extends Component {
     goTo(id, resetFilters) {
         const visible = this.filtered().some(p => p.id === id)
         const patch = { bagOpen: false, bagMsg: null }
-        if (resetFilters || !visible) Object.assign(patch, { gen: genOf(id), query: '', type: null })
+        if (resetFilters || !visible) Object.assign(patch, { gen: 'all', query: '', type: null })
         this.setState(patch, () => {
             this.select(id)
             if (this.state.model === 'grid') this.setState({ drawer: true })
@@ -369,7 +370,7 @@ export class Pokedex extends Component {
         const draft = s.draftFav ? byId(s.draftFav) : null
         const dd = (s.draftFav && this.cache[s.draftFav]) || {}
 
-        const typeChips = [{ k: 'all', label: 'Todos', dot: '#8893A2', bg: !s.type ? '#1B2733' : '#fff', fg: !s.type ? '#fff' : '#586675', border: !s.type ? '#1B2733' : '#D6DDE6', go: () => this.setFilter({ type: null }) }]
+        const typeChips = [{ k: 'all', label: 'Todos os tipos', dot: '#8893A2', bg: !s.type ? '#1B2733' : '#fff', fg: !s.type ? '#fff' : '#586675', border: !s.type ? '#1B2733' : '#D6DDE6', go: () => this.setFilter({ type: null }) }]
             .concat(Object.keys(TYPES).map(t => {
                 const on = s.type === t
                 return { k: t, label: TYPES[t][0], dot: on ? (TYPES[t][2] ? '#1B2733' : '#fff') : TYPES[t][1], bg: on ? TYPES[t][1] : '#fff', fg: on ? (TYPES[t][2] ? '#1B2733' : '#fff') : '#586675', border: on ? TYPES[t][1] : '#D6DDE6', go: () => this.setFilter({ type: on ? null : t }) }
@@ -426,7 +427,7 @@ export class Pokedex extends Component {
             loading: s.loading, hasError: !!s.error, error: s.error,
             retry: () => { try { localStorage.removeItem(IDX) } catch (e) {} this.loadIndex() },
             hasFav: !!fav, favName: fav ? nice(fav.name) : '', favSrc: fav ? gif(fav.id, false) : '', favFb: fav ? spr(fav.id, false) : '',
-            goFav: () => { if (s.favId) this.goTo(s.favId, true) },
+            goFav: () => { if (s.favId) this.goTo(s.favId) },
             changeFav: () => this.setState({ phase: 'setup', step: 1, editing: 'fav', draftFav: s.favId, pickGen: s.favId ? genOf(s.favId) : s.pickGen, drawer: false, bagOpen: false }, () => window.scrollTo(0, 0)),
 
             query: s.query, gen: s.gen,
