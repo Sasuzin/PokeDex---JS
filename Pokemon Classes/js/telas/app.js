@@ -60,6 +60,13 @@ export function barraDeFiltros(v) {
         </div>`
 }
 
+export function rodape() {
+    return html`
+        <footer style="border-top:1px solid #D6DDE6;padding:20px 24px 28px;text-align:center;font-size:13px;color:#586675;">
+            Desenvolvido por <a href="https://www.linkedin.com/in/luis-galv%C3%A3o/" target="_blank" rel="noopener noreferrer" style="font-weight:600;text-decoration:none;">Luis Galvão</a>
+        </footer>`
+}
+
 export function estadosDaLista(v) {
     return html`
         ${v.loading && carregando()}

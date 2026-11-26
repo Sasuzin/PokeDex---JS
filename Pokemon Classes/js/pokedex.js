@@ -3,12 +3,25 @@
 import { html, Component } from './lib.js'
 import { API, TYPES, GENS, STATS, SHORT, MODELS, PREF, IDX, CORES_CLASSICA, BAG_MAX, corClassica, varsCor, nice, num, idOf, spr, art, gif, badge, genOf } from './dados.js'
 import { telaSetup } from './telas/setup.js'
-import { cabecalho, barraDeFiltros, estadosDaLista } from './telas/app.js'
+import { cabecalho, barraDeFiltros, estadosDaLista, rodape } from './telas/app.js'
 import { telaClassica } from './telas/classica.js'
 import { telaCatalogo } from './telas/catalogo.js'
 import { telaScanner } from './telas/scanner.js'
 import { telaCaptura } from './telas/captura.js'
 import { painelMochila } from './telas/mochila.js'
+
+const semAcento = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '')
+
+// Filtra a lista por geração, tipo e texto (nome ou número).
+// Com texto digitado, a busca vale para todas as gerações: quem procura "Lucario" quer achá-lo mesmo com a Gen I selecionada.
+function filtrar(list, genKey, query, type) {
+    const q = semAcento(query.trim().toLowerCase()).replace('#', '')
+    const qn = q.replace(/^0+/, '')
+    const g = q ? GENS.find(x => x[0] === 'all') : (GENS.find(x => x[0] === genKey) || GENS[0])
+    return list.filter(p => p.id >= g[2] && p.id <= g[3]
+        && (!type || p.types.includes(type))
+        && (!q || p.name.includes(q) || p.name.replace(/-/g, ' ').includes(q.replace(/\./g, '')) || (qn && String(p.id) === qn)))
+}
 
 export class Pokedex extends Component {
     constructor(props) {
@@ -148,10 +161,7 @@ export class Pokedex extends Component {
 
     filtered(s) {
         s = s || this.state
-        const g = GENS.find(x => x[0] === s.gen) || GENS[0]
-        const q = s.query.trim().toLowerCase().replace('#', '')
-        const qn = q.replace(/^0+/, '')
-        return s.list.filter(p => p.id >= g[2] && p.id <= g[3] && (!s.type || p.types.includes(s.type)) && (!q || p.name.includes(q) || (qn && String(p.id) === qn)))
+        return filtrar(s.list, s.gen, s.query, s.type)
     }
 
     step(n) {
@@ -332,9 +342,7 @@ export class Pokedex extends Component {
             return { id: p.id, num: num(p.id), src: spr(p.id, sh), fb: spr(p.id, false), border: on ? '2px solid #1B5BA0' : '1px solid #D6DDE6', tf: on ? 'scale(1.1)' : 'scale(.94)', op: on ? 1 : .7, go: () => this.select(p.id) }
         })
 
-        const pg = GENS.find(g => g[0] === s.pickGen) || GENS[0]
-        const pq = s.pickQuery.trim().toLowerCase().replace('#', '')
-        const pf = s.list.filter(p => p.id >= pg[2] && p.id <= pg[3] && (!pq || p.name.includes(pq) || String(p.id) === pq.replace(/^0+/, '')))
+        const pf = filtrar(s.list, s.pickGen, s.pickQuery, null)
         const pickItems = pf.slice(0, s.pickLimit).map(p => {
             const on = p.id === s.draftFav
             return Object.assign(card(p), {
@@ -351,9 +359,7 @@ export class Pokedex extends Component {
             return Object.assign(card(p), { n: i + 1, label: nice(p.name) || num(id), remove: () => this.toggleBag(id), go: () => this.goTo(id) })
         })
         const bagTypes = [...new Set(s.bag.flatMap(id => (byId(id) || { types: [] }).types))].map(badge)
-        const bagG = GENS.find(g => g[0] === s.bagGen) || GENS[GENS.length - 1]
-        const bq = s.bagQuery.trim().toLowerCase().replace('#', '')
-        const bf = s.list.filter(p => p.id >= bagG[2] && p.id <= bagG[3] && (!bq || p.name.includes(bq) || String(p.id) === bq.replace(/^0+/, '')))
+        const bf = filtrar(s.list, s.bagGen, s.bagQuery, null)
         const bagPick = bf.slice(0, s.bagLimit).map(p => Object.assign(card(p), { src: spr(p.id, false), on: bagSet.has(p.id), go: () => this.toggleBag(p.id) }))
 
         const draft = s.draftFav ? byId(s.draftFav) : null
@@ -424,7 +430,7 @@ export class Pokedex extends Component {
             onGen: e => this.setFilter({ gen: e.target.value }),
             toggleShiny: () => this.setState({ shiny: !sh }),
             shinyBg: sh ? '#FFF3DC' : '#fff', shinyFg: sh ? '#B7791A' : '#586675', shinyBorder: sh ? '#B7791A' : '#C3CCD8',
-            countLabel: ready ? filt.length + ' Pokémon' : '', typeChips,
+            countLabel: ready ? filt.length + ' Pokémon' + (s.query.trim() ? ' em todas as gerações' : '') : '', typeChips,
             isEmpty: ready && !filt.length, clearFilters: () => this.setFilter({ query: '', type: null }),
 
             isClassic: ready && filt.length > 0 && s.model === 'classic',
@@ -463,19 +469,25 @@ export class Pokedex extends Component {
 
     render() {
         const v = this.renderVals()
+        // Coluna com altura mínima da tela, para o rodapé ficar sempre no fim da página.
         return html`
             ${v.motionStyle}
-            ${v.isSetup && telaSetup(v)}
-            ${v.isApp && html`
-                ${cabecalho(v)}
-                <main style="max-width:1280px;margin:0 auto;padding:20px 24px 56px;">
-                    ${barraDeFiltros(v)}
-                    ${estadosDaLista(v)}
-                    ${v.isClassic && telaClassica(v)}
-                    ${v.isGrid && telaCatalogo(v)}
-                    ${v.isScan && telaScanner(v)}
-                </main>
-            `}
+            <div style="min-height:100vh;display:flex;flex-direction:column;">
+                ${v.isSetup && telaSetup(v)}
+                ${v.isApp && html`
+                    ${cabecalho(v)}
+                    <div style="flex:1;">
+                        <main style="max-width:1280px;margin:0 auto;padding:20px 24px 56px;">
+                            ${barraDeFiltros(v)}
+                            ${estadosDaLista(v)}
+                            ${v.isClassic && telaClassica(v)}
+                            ${v.isGrid && telaCatalogo(v)}
+                            ${v.isScan && telaScanner(v)}
+                        </main>
+                    </div>
+                `}
+                ${rodape()}
+            </div>
             ${v.isApp && v.bagOpen && painelMochila(v)}
             ${v.showCapture && telaCaptura(v)}
         `
